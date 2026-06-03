@@ -45,6 +45,8 @@ CDN Pro integrates with AWS S3 to deliver and cache cloud-hosted content. CDN Pr
 
 8. Uncheck **Block all public access**, then click **Save**.
 
+   ![Uncheck Block all public access](../../assets/s3/s3-03.png)
+
 9. Copy the following CORS configuration and paste it into the **CORS configuration** editor:
 
    ```xml
@@ -61,11 +63,13 @@ CDN Pro integrates with AWS S3 to deliver and cache cloud-hosted content. CDN Pr
 
 10. Upload a file to the bucket to test the configuration and grant read/write permissions to the uploaded object.
 
-    ![Upload file](../../assets/s3/s3-03.png)
+    ![Upload file](../../assets/s3/s3-04.png)
+
+    ![Upload permissions](../../assets/s3/s3-05.png)
 
 11. Click the uploaded file in the bucket to view the **Object URL**.
 
-    ![Object URL](../../assets/s3/s3-04.png)
+    ![Object URL](../../assets/s3/s3-06.png)
 
     Amazon S3 generates the file URL automatically. In this example the URL is
     `https://files-waytoo-digital.s3.amazonaws.com/file_1m.bin`.
@@ -81,7 +85,7 @@ Sign in to the CDN Pro console and follow the Quick Start guide to create and va
 
 1. On the edge hostname page, create an edge hostname `files-waytoo-digital.qtlcdn.com`.
 
-   ![Create edge hostname](../../assets/s3/s3-05.png)
+   ![Create edge hostname](../../assets/s3/s3-07.png)
 
 2. After creation, verify it resolves from your terminal:
 
@@ -101,11 +105,11 @@ Sign in to the CDN Pro console and follow the Quick Start guide to create and va
    2. Set **Auto Renewal** to **Let's Encrypt**, **Creation Method** to **Auto Generate**, and **Public Key Algorithm** to **RSA2048**. Enter `files.waytoo.digital` in both **Authorized Domain** and **SAN**.
    3. Click **Save** to create the certificate.
 
-   ![Create certificate](../../assets/s3/s3-06.png)
+   ![Create certificate](../../assets/s3/s3-08.png)
 
 2. **Deploy the certificate to staging.** Once created, deploy it to staging first to validate before publishing to production.
 
-   ![Deploy certificate](../../assets/s3/s3-07.png)
+   ![Deploy certificate to staging](../../assets/s3/s3-09.png)
 
 ### 2.3 Configure the property
 
@@ -113,7 +117,7 @@ Sign in to the CDN Pro console and follow the Quick Start guide to create and va
    1. Enter **Property Name**, **Property Description**, and **Service Type**.
    2. Enter at least one hostname under **Accelerated Domain**. CDN Pro extracts the Host header from client requests and matches it against this domain to apply the property's configuration.
 
-   ![Create property](../../assets/s3/s3-08.png)
+   ![Create property](../../assets/s3/s3-10.png)
 
 2. **Add the Amazon S3 bucket as an origin.** Under **Origin**, click **Add**:
    1. **Origin Name**: set to `aws_origin`; this name will be referenced in Edge Logic later.
@@ -121,7 +125,7 @@ Sign in to the CDN Pro console and follow the Quick Start guide to create and va
    3. **Host Header**: expand **Advanced Configuration** and set **Host Header** to `files-waytoo-digital.s3.amazonaws.com`.
    4. Click **Save** to create the Amazon S3 origin.
 
-   ![Add S3 origin](../../assets/s3/s3-09.png)
+   ![Add S3 origin](../../assets/s3/s3-11.png)
 
    > **Note:** The Host header **must** be set to the Amazon S3 bucket's file access hostname. If left blank, CDN Pro will forward the request to Amazon S3 with the accelerated domain `files.waytoo.digital` in the Host header by default, and Amazon S3 will respond with **Bucket not found**.
 
@@ -130,7 +134,7 @@ Sign in to the CDN Pro console and follow the Quick Start guide to create and va
    2. In the path-specific cache rules, enable "force ignore origin response headers" to control caching at CDN Pro.
    3. Click **OK** to import. The Edge Logic editor will show the generated script (you can adjust it to match your business needs).
 
-   ![Edge Logic configuration](../../assets/s3/s3-10.png)
+   ![Edge Logic configuration](../../assets/s3/s3-12.png)
 
    ```nginx
    location / {
@@ -172,11 +176,11 @@ Sign in to the CDN Pro console and follow the Quick Start guide to create and va
 
 4. **Bind a TLS certificate to the property.** To support HTTPS delivery, configure a TLS certificate for the property. On the TLS configuration page, click the **TLS Certificate** field and select the certificate you just created and deployed to staging.
 
-   ![Bind TLS certificate](../../assets/s3/s3-11.png)
+   ![Bind TLS certificate](../../assets/s3/s3-13.png)
 
 5. **Save / validate / test.** Click **Save** at the bottom to submit the property configuration. If save and validation succeed, deploy the property to staging for testing.
 
-   ![Save and deploy](../../assets/s3/s3-12.png)
+   ![Save and deploy to staging](../../assets/s3/s3-14.png)
 
 ### 2.4 Test in staging
 
@@ -227,7 +231,7 @@ Once the staging configuration works as expected, proceed to production.
 
 To roll out, deploy the certificate and the property to production from their respective pages.
 
-![Deploy to production](../../assets/s3/s3-13.png)
+![Deploy to production](../../assets/s3/s3-15.png)
 
 ### 2.6 Test in production
 
@@ -267,7 +271,7 @@ We have a public bucket accelerated through CDN Pro. Now let's switch the bucket
 
 Return to the AWS S3 bucket configuration. On the **Permissions** tab, re-check **Block all public access** to make the bucket private. Once private, fetching content from the bucket requires a credential; AWS S3 will only return objects after authenticating the request.
 
-![Set bucket to private](../../assets/s3/s3-14.png)
+![Set bucket to private](../../assets/s3/s3-16.png)
 
 ### 3.2 Enable origin authentication on CDN Pro
 
@@ -287,7 +291,7 @@ Edit the property to enable AWS S3 origin authentication. Before doing so, gathe
 
    Click **Save**.
 
-   ![AWS S3 origin authentication](../../assets/s3/s3-15.png)
+   ![AWS S3 origin authentication](../../assets/s3/s3-17.png)
 
 4. Deploy the new property version to staging and validate it works as expected:
 
@@ -300,7 +304,5 @@ Edit the property to enable AWS S3 origin authentication. Before doing so, gathe
    ```
 
 5. Deploy to production.
-
-   ![Deploy to production](../../assets/s3/s3-16.png)
 
 The AWS S3 private-bucket configuration is now complete and the bucket's content is being accelerated through CDN Pro.
